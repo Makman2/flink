@@ -269,6 +269,18 @@ public class MesosApplicationMasterRunner {
 				taskManagerParameters, taskManagerConfig,
 				workingDir, getTaskManagerClass(), artifactServer, LOG);
 
+			// Using a docker image to deploy Java.
+			Protos.ContainerInfo.DockerInfo.Builder dockerInfoBuilder = Protos.ContainerInfo.DockerInfo.newBuilder();
+			dockerInfoBuilder.setImage("openjdk:8");
+			dockerInfoBuilder.setNetwork(Protos.ContainerInfo.DockerInfo.Network.HOST);
+
+			Protos.ContainerInfo.Builder containerInfoBuilder = Protos.ContainerInfo.newBuilder();
+			// TODO If possible, use Mesos containerizer
+			containerInfoBuilder.setType(Protos.ContainerInfo.Type.DOCKER);
+			containerInfoBuilder.setDocker(dockerInfoBuilder.build());
+
+			taskManagerContext.setContainer(containerInfoBuilder.build());
+
 			// ----------------- (4) start the actors -------------------
 
 			// 1) JobManager & Archive (in non-HA case, the leader service takes this)
