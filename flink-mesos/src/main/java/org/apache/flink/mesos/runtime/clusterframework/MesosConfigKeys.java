@@ -38,6 +38,7 @@ public class MesosConfigKeys {
 	public static final String ENV_CLASSPATH = "CLASSPATH";
 	public static final String ENV_MESOS_SANDBOX = "MESOS_SANDBOX";
 	public static final String ENV_SESSION_ID = "_CLIENT_SESSION_ID";
+	public static final String ENV_JAVA_HOME = "JAVA_HOME";
 
 	/** Private constructor to prevent instantiation */
 	private MesosConfigKeys() {}

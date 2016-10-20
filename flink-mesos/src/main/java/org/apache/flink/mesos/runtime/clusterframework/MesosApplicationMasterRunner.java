@@ -269,6 +269,30 @@ public class MesosApplicationMasterRunner {
 				taskManagerParameters, taskManagerConfig,
 				workingDir, getTaskManagerClass(), artifactServer, LOG);
 
+			// Set base container for task manager if specified in configs.
+			// TODO Currently only docker images are supported (running via Mesos containerizer), may change.
+			String taskManagerContainer = config.getString(ConfigConstants.TASK_MANAGER_CONTAINER, "");
+
+			if (taskManagerContainer.length() > 0) {
+				Protos.Image.Docker.Builder dockerBuilder = Protos.Image.Docker.newBuilder();
+				dockerBuilder.setName(taskManagerContainer);
+
+				Protos.Image.Builder imageBuilder = Protos.Image.newBuilder();
+				imageBuilder.setType(Protos.Image.Type.DOCKER);
+				imageBuilder.setDocker(dockerBuilder);
+
+				// Note: Mesos containerizer already uses network HOST mode, no need
+				// (and also no ability) to configure that.
+				Protos.ContainerInfo.MesosInfo.Builder mesosInfoBuilder = Protos.ContainerInfo.MesosInfo.newBuilder();
+				mesosInfoBuilder.setImage(imageBuilder);
+
+				Protos.ContainerInfo.Builder containerInfoBuilder = Protos.ContainerInfo.newBuilder();
+				containerInfoBuilder.setType(Protos.ContainerInfo.Type.MESOS);
+				containerInfoBuilder.setMesos(mesosInfoBuilder);
+
+				taskManagerContext.setContainer(containerInfoBuilder);
+			}
+
 			// ----------------- (4) start the actors -------------------
 
 			// 1) JobManager & Archive (in non-HA case, the leader service takes this)
@@ -596,6 +620,12 @@ public class MesosApplicationMasterRunner {
 		}
 		envBuilder.addVariables(variable(MesosConfigKeys.ENV_CLASSPATH, classPathString));
 		envBuilder.addVariables(variable(MesosConfigKeys.ENV_CLIENT_USERNAME, clientUsername));
+
+		// Override JAVA_HOME environment variable if specified in configs.
+		String javaHomeEnvOverride = flinkConfig.getString(ConfigConstants.TASK_MANAGER_JAVA_HOME, null);
+		if (javaHomeEnvOverride != null) {
+			envBuilder.addVariables(variable(MesosConfigKeys.ENV_JAVA_HOME, javaHomeEnvOverride));
+		}
 
 		cmd.setEnvironment(envBuilder);
 
