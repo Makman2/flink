@@ -270,14 +270,20 @@ public class MesosApplicationMasterRunner {
 				workingDir, getTaskManagerClass(), artifactServer, LOG);
 
 			// Using a docker image to deploy Java.
-			Protos.ContainerInfo.DockerInfo.Builder dockerInfoBuilder = Protos.ContainerInfo.DockerInfo.newBuilder();
-			dockerInfoBuilder.setImage("openjdk:8");
-			dockerInfoBuilder.setNetwork(Protos.ContainerInfo.DockerInfo.Network.HOST);
+			Protos.Image.Docker.Builder dockerBuilder = Protos.Image.Docker.newBuilder();
+			dockerBuilder.setName("openjdk:8");
+
+			Protos.Image.Builder imageBuilder = Protos.Image.newBuilder();
+			imageBuilder.setDocker(dockerBuilder.build());
+
+			// NOTE Mesos containerizer uses already network HOST mode, no need (and also no
+			//      ability) to configure that.
+			Protos.ContainerInfo.MesosInfo.Builder mesosInfoBuilder = Protos.ContainerInfo.MesosInfo.newBuilder();
+			mesosInfoBuilder.setImage(imageBuilder.build());
 
 			Protos.ContainerInfo.Builder containerInfoBuilder = Protos.ContainerInfo.newBuilder();
-			// TODO If possible, use Mesos containerizer
-			containerInfoBuilder.setType(Protos.ContainerInfo.Type.DOCKER);
-			containerInfoBuilder.setDocker(dockerInfoBuilder.build());
+			containerInfoBuilder.setType(Protos.ContainerInfo.Type.MESOS);
+			containerInfoBuilder.setMesos(mesosInfoBuilder.build());
 
 			taskManagerContext.setContainer(containerInfoBuilder.build());
 
