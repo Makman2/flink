@@ -274,6 +274,7 @@ public class MesosApplicationMasterRunner {
 			dockerBuilder.setName("openjdk:8");
 
 			Protos.Image.Builder imageBuilder = Protos.Image.newBuilder();
+			imageBuilder.setType(Protos.Image.Type.DOCKER);
 			imageBuilder.setDocker(dockerBuilder.build());
 
 			// NOTE Mesos containerizer uses already network HOST mode, no need (and also no
