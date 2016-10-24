@@ -275,18 +275,18 @@ public class MesosApplicationMasterRunner {
 
 			Protos.Image.Builder imageBuilder = Protos.Image.newBuilder();
 			imageBuilder.setType(Protos.Image.Type.DOCKER);
-			imageBuilder.setDocker(dockerBuilder.build());
+			imageBuilder.setDocker(dockerBuilder);
 
 			// NOTE Mesos containerizer uses already network HOST mode, no need (and also no
 			//      ability) to configure that.
 			Protos.ContainerInfo.MesosInfo.Builder mesosInfoBuilder = Protos.ContainerInfo.MesosInfo.newBuilder();
-			mesosInfoBuilder.setImage(imageBuilder.build());
+			mesosInfoBuilder.setImage(imageBuilder);
 
 			Protos.ContainerInfo.Builder containerInfoBuilder = Protos.ContainerInfo.newBuilder();
 			containerInfoBuilder.setType(Protos.ContainerInfo.Type.MESOS);
-			containerInfoBuilder.setMesos(mesosInfoBuilder.build());
+			containerInfoBuilder.setMesos(mesosInfoBuilder);
 
-			taskManagerContext.setContainer(containerInfoBuilder.build());
+			taskManagerContext.setContainer(containerInfoBuilder);
 
 			// ----------------- (4) start the actors -------------------
 
