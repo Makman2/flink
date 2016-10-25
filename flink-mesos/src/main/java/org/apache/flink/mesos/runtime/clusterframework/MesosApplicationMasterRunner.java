@@ -615,6 +615,7 @@ public class MesosApplicationMasterRunner {
 		}
 		envBuilder.addVariables(variable(MesosConfigKeys.ENV_CLASSPATH, classPathString));
 		envBuilder.addVariables(variable(MesosConfigKeys.ENV_CLIENT_USERNAME, clientUsername));
+		envBuilder.addVariables(variable("JAVA_HOME", "/usr/lib/jvm/java-8-openjdk-amd64"));
 
 		cmd.setEnvironment(envBuilder);
 
