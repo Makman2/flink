@@ -603,7 +603,7 @@ public class MesosApplicationMasterRunner {
 
 		// Set base container for task manager if specified in configs.
 		String taskManagerContainer = flinkConfig.getString(
-			ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE, "");
+			ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_NAME, "");
 
 		// TODO Try docker containerizer again...
 		if (taskManagerContainer.length() > 0) {

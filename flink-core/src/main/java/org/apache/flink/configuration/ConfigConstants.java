@@ -493,7 +493,7 @@ public final class ConfigConstants {
 	 *
 	 * NOTE: Currently only docker images are supported.
 	 */
-	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE = "mesos.resourcemanager.tasks.container.image.name";
+	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_NAME = "mesos.resourcemanager.tasks.container.image.name";
 
 	// ------------------------ Hadoop Configuration ------------------------
 
