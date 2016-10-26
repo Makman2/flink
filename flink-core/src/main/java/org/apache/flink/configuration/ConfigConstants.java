@@ -273,12 +273,6 @@ public final class ConfigConstants {
 	public static final String TASK_MANAGER_REFUSED_REGISTRATION_PAUSE = "taskmanager.refused-registration-pause";
 
 	/**
-	 * A custom path for the {@code JAVA_HOME} environment variable. This setting effectively overrides
-	 * {@code JAVA_HOME}. Useful to control the java runtime Flink task managers shall use.
-	 */
-	public static final String TASK_MANAGER_JAVA_HOME = "taskmanager.java-home";
-
-	/**
 	 * Time interval between two successive task cancellation attempts in milliseconds.
 	 */
 	@PublicEvolving
