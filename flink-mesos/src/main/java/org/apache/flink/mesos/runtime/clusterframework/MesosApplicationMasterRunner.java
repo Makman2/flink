@@ -605,6 +605,7 @@ public class MesosApplicationMasterRunner {
 		String taskManagerContainer = flinkConfig.getString(
 			ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE, "");
 
+		// TODO Try docker containerizer again...
 		if (taskManagerContainer.length() > 0) {
 			Protos.ContainerInfo.Builder containerInfo = Protos.ContainerInfo.newBuilder()
 				.setType(Protos.ContainerInfo.Type.MESOS)
