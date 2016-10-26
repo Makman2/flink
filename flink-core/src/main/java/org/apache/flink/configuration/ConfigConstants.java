@@ -273,13 +273,6 @@ public final class ConfigConstants {
 	public static final String TASK_MANAGER_REFUSED_REGISTRATION_PAUSE = "taskmanager.refused-registration-pause";
 
 	/**
-	 * The base container image to use for task managers (started via the unified containerizer).
-	 *
-	 * NOTE: Currently only docker images are supported.
-	 */
-	public static final String TASK_MANAGER_CONTAINER = "taskmanager.container";
-
-	/**
 	 * A custom path for the {@code JAVA_HOME} environment variable. This setting effectively overrides
 	 * {@code JAVA_HOME}. Useful to control the java runtime Flink task managers shall use.
 	 */
@@ -500,6 +493,13 @@ public final class ConfigConstants {
 	 * By default, we use the number of requested task slots.
 	 */
 	public static final String MESOS_RESOURCEMANAGER_TASKS_CPUS = "mesos.resourcemanager.tasks.cpus";
+
+	/**
+	 * The base container image to use for task managers (started via the unified containerizer).
+	 *
+	 * NOTE: Currently only docker images are supported.
+	 */
+	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE = "mesos.resourcemanager.tasks.container.image.name";
 
 	// ------------------------ Hadoop Configuration ------------------------
 
