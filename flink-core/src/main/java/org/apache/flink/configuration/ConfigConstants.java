@@ -490,10 +490,21 @@ public final class ConfigConstants {
 
 	/**
 	 * The base container image to use for task managers (started via the unified containerizer).
-	 *
-	 * NOTE: Currently only docker images are supported.
 	 */
-	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_NAME = "mesos.resourcemanager.tasks.container.image.name";
+	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_NAME =
+		"mesos.resourcemanager.tasks.container.image.name";
+
+	/**
+	 * The type of container to use for task managers. Valid values are
+	 * {@code MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS} or
+	 * {@code MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER}.
+	 */
+	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE =
+		"mesos.resourcemanager.tasks.container.image.type";
+
+	// TODO Docs
+	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS = "mesos";
+	public static final String MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER = "docker";
 
 	// ------------------------ Hadoop Configuration ------------------------
 
@@ -1161,6 +1172,8 @@ public final class ConfigConstants {
 	public static final String DEFAULT_MESOS_RESOURCEMANAGER_FRAMEWORK_NAME = "Flink";
 
 	public static final String DEFAULT_MESOS_RESOURCEMANAGER_FRAMEWORK_ROLE = "*";
+
+	public static final String DEFAULT_MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE = "mesos";
 
 	// ------------------------ File System Behavior ------------------------
 

@@ -602,20 +602,48 @@ public class MesosApplicationMasterRunner {
 		info.setCommand(cmd);
 
 		// Set base container for task manager if specified in configs.
-		String taskManagerContainer = flinkConfig.getString(
+		String taskManagerContainerName = flinkConfig.getString(
 			ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_NAME, "");
 
-		// TODO Try docker containerizer again...
-		if (taskManagerContainer.length() > 0) {
-			Protos.ContainerInfo.Builder containerInfo = Protos.ContainerInfo.newBuilder()
-				.setType(Protos.ContainerInfo.Type.MESOS)
-				.setMesos(Protos.ContainerInfo.MesosInfo.newBuilder()
-					.setImage(Protos.Image.newBuilder()
-						.setType(Protos.Image.Type.DOCKER)
-						.setDocker(Protos.Image.Docker.newBuilder()
-							.setName(taskManagerContainer))));
+		if (taskManagerContainerName.length() > 0) {
+			String taskManagerContainerType = flinkConfig.getString(
+				ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE,
+				ConfigConstants.DEFAULT_MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE);
 
-			info.setContainer(containerInfo);
+			Protos.ContainerInfo.Builder containerInfo;
+
+			if (taskManagerContainerType.equals(ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS)) {
+				containerInfo = Protos.ContainerInfo.newBuilder()
+					.setType(Protos.ContainerInfo.Type.MESOS)
+					.setMesos(Protos.ContainerInfo.MesosInfo.newBuilder()
+						.setImage(Protos.Image.newBuilder()
+							.setType(Protos.Image.Type.DOCKER)
+							.setDocker(Protos.Image.Docker.newBuilder()
+								.setName(taskManagerContainerName))));
+			}
+			else if (taskManagerContainerType.equals(ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER)) {
+				containerInfo = Protos.ContainerInfo.newBuilder()
+					.setType(Protos.ContainerInfo.Type.DOCKER)
+					.setDocker(Protos.ContainerInfo.DockerInfo.newBuilder()
+						.setNetwork(Protos.ContainerInfo.DockerInfo.Network.HOST)
+						.setForcePullImage(true)
+						.setImage(taskManagerContainerName));
+			}
+			else {
+				LOG.warn(
+					"Invalid container type '{}' provided for setting {}. Valid values are '{}' or '{}'. " +
+						"Starting task managers now without container.",
+					taskManagerContainerType,
+					ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE,
+					ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS,
+					ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER);
+
+				containerInfo = null;
+			}
+
+			if (containerInfo != null) {
+				info.setContainer(containerInfo);
+			}
 		}
 
 		return info;
