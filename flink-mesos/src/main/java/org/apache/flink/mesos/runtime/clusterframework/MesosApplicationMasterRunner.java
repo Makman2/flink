@@ -612,33 +612,36 @@ public class MesosApplicationMasterRunner {
 
 			Protos.ContainerInfo.Builder containerInfo;
 
-			if (taskManagerContainerType.equals(ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS)) {
-				containerInfo = Protos.ContainerInfo.newBuilder()
-					.setType(Protos.ContainerInfo.Type.MESOS)
-					.setMesos(Protos.ContainerInfo.MesosInfo.newBuilder()
-						.setImage(Protos.Image.newBuilder()
-							.setType(Protos.Image.Type.DOCKER)
-							.setDocker(Protos.Image.Docker.newBuilder()
-								.setName(taskManagerContainerName))));
-			}
-			else if (taskManagerContainerType.equals(ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER)) {
-				containerInfo = Protos.ContainerInfo.newBuilder()
-					.setType(Protos.ContainerInfo.Type.DOCKER)
-					.setDocker(Protos.ContainerInfo.DockerInfo.newBuilder()
-						.setNetwork(Protos.ContainerInfo.DockerInfo.Network.HOST)
-						.setForcePullImage(true)
-						.setImage(taskManagerContainerName));
-			}
-			else {
-				LOG.warn(
-					"Invalid container type '{}' provided for setting {}. Valid values are '{}' or '{}'. " +
-						"Starting task managers now without container.",
-					taskManagerContainerType,
-					ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE,
-					ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS,
-					ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER);
+			switch (taskManagerContainerType) {
+				case ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS:
+					containerInfo = Protos.ContainerInfo.newBuilder()
+						.setType(Protos.ContainerInfo.Type.MESOS)
+						.setMesos(Protos.ContainerInfo.MesosInfo.newBuilder()
+							.setImage(Protos.Image.newBuilder()
+								.setType(Protos.Image.Type.DOCKER)
+								.setDocker(Protos.Image.Docker.newBuilder()
+									.setName(taskManagerContainerName))));
+					break;
+				case ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER:
+					containerInfo = Protos.ContainerInfo.newBuilder()
+						.setType(Protos.ContainerInfo.Type.DOCKER)
+						.setDocker(Protos.ContainerInfo.DockerInfo.newBuilder()
+							.setNetwork(Protos.ContainerInfo.DockerInfo.Network.HOST)
+							.setForcePullImage(true)
+							.setImage(taskManagerContainerName));
+					break;
+				default:
+					LOG.warn(
+						"Invalid container type '{}' provided for setting {}. Valid values are '{}' or '{}'. " +
+							"Starting task managers now without container.",
+						taskManagerContainerType,
+						ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE,
+						ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_MESOS,
+						ConfigConstants.MESOS_RESOURCEMANAGER_TASKS_CONTAINER_IMAGE_TYPE_DOCKER);
 
-				containerInfo = null;
+					containerInfo = null;
+
+					break;
 			}
 
 			if (containerInfo != null) {
